@@ -1,75 +1,214 @@
 {{!-- Home --}}
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
 
-    *{
+    :root {
+        --bg-main: #f7f1e8;
+        --bg-panel: rgba(255, 250, 245, 0.9);
+        --bg-accent: linear-gradient(135deg, #c96c4e 0%, #7a3e65 100%);
+        --text-main: #231815;
+        --text-soft: #6b5b56;
+        --bubble-bg: #fff7f0;
+        --border-soft: rgba(80, 42, 32, 0.12);
+        --shadow-main: 0 24px 50px rgba(69, 34, 27, 0.14);
+    }
+
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: system-ui;
     }
-    .sendChat{
-        display: flex;
+
+    body {
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        color: var(--text-main);
+        background:
+            radial-gradient(circle at top left, rgba(230, 178, 121, 0.55), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(122, 62, 101, 0.2), transparent 30%),
+            linear-gradient(180deg, #fdf8f2 0%, #efe2d2 100%);
+    }
+
+    .chatLayout {
+        width: min(100%, 920px);
+        margin: 0 auto;
+        display: grid;
+        gap: 1.25rem;
+    }
+
+    .sendChat {
+        display: grid;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: var(--bg-panel);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 28px;
+        box-shadow: var(--shadow-main);
+        backdrop-filter: blur(12px);
+    }
+
+    .chatHeading {
+        display: grid;
+        gap: 0.35rem;
+    }
+
+    .chatHeading h1 {
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+    }
+
+    .chatHeading p {
+        color: var(--text-soft);
+        font-size: 0.98rem;
+    }
+
+    .chatControls {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.75rem;
+    }
+
+    #chatInput {
         width: 100%;
-        justify-content: center;
-        align-items: center;
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--border-soft);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.86);
+        color: var(--text-main);
+        font: inherit;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    #chatInput::placeholder {
+        color: #9a857d;
+    }
+
+    #chatInput:focus {
+        border-color: rgba(122, 62, 101, 0.35);
+        box-shadow: 0 0 0 4px rgba(122, 62, 101, 0.12);
+        transform: translateY(-1px);
+    }
+
+    .sendChat button {
+        border: none;
+        padding: 0.95rem 1.3rem;
+        border-radius: 18px;
+        background: var(--bg-accent);
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        box-shadow: 0 12px 20px rgba(122, 62, 101, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .sendChat button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 28px rgba(122, 62, 101, 0.28);
+        filter: saturate(1.08);
+    }
+
+    .sendChat button:active {
+        transform: translateY(0);
+    }
+
+    .chatMessages {
+        display: flex;
         flex-direction: column;
         gap: 1rem;
-        background-color: rgb(167, 142, 142);
-        border-radius: 1rem;
+        min-height: 320px;
+        max-height: 60vh;
+        padding: 1.5rem;
+        overflow-y: auto;
+        background: rgba(255, 252, 248, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 28px;
+        box-shadow: var(--shadow-main);
+        backdrop-filter: blur(10px);
     }
 
-    .sendChat button{
-        border: none;
-        background-color:#333 ;
-        color: #fff;
-        padding: 0.2rem;
-        border-radius: 0.5rem;
-        margin-bottom: 0.5rem;
+    .chatMessages::-webkit-scrollbar {
+        width: 10px;
     }
 
-    .chatMessages{
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        background-color: #ededed;
-        padding: 1rem 0 0 1rem;
-        border-radius: 1rem;
-        gap: 1.5rem;
+    .chatMessages::-webkit-scrollbar-thumb {
+        background: rgba(122, 62, 101, 0.22);
+        border-radius: 999px;
     }
 
-    .userMessage{
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+    .userMessage {
+        display: grid;
+        gap: 0.45rem;
+        max-width: min(100%, 42rem);
+        padding: 1rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 247, 240, 0.94) 100%);
+        border: 1px solid rgba(201, 108, 78, 0.1);
+        border-radius: 20px 20px 20px 8px;
+        box-shadow: 0 10px 24px rgba(92, 52, 36, 0.08);
     }
 
     .mensaje {
-        background-color: rgb(230, 212, 212);
-        color: #333;
-        padding: 0.5rem 1rem;
-        border-radius: 0.8rem;
+        background: var(--bubble-bg);
+        color: var(--text-main);
+        padding: 0.85rem 1rem;
+        border-radius: 16px;
+        line-height: 1.5;
         text-align: start;
+        border: 1px solid rgba(201, 108, 78, 0.08);
     }
 
-    .username{
-        background-color: none;
-        color: #000;
+    .username {
+        color: #8a442f;
+        font-size: 0.88rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    @media (max-width: 640px) {
+        body {
+            padding: 1rem 0.75rem;
+        }
+
+        .sendChat,
+        .chatMessages {
+            padding: 1.1rem;
+            border-radius: 22px;
+        }
+
+        .chatControls {
+            grid-template-columns: 1fr;
+        }
+
+        .sendChat button {
+            width: 100%;
+        }
     }
 </style>
-<div class="sendChat">
-    <h1>Chat Example</h1>
-    <input type="text" id="chatInput">
-    <button id="chatButton">Enviar</button>
-</div>    
-<div id="chat" class="chatMessages">
-    {{#each chatMessages}}
-    <div class="userMessage">
-        <p class="username">{{this.username}}</p>
-        <p class="mensaje">{{this.mensaje}}</p>
+<div class="chatLayout">
+    <div class="sendChat">
+        <div class="chatHeading">
+            <h1>Chat Example</h1>
+            <p>Escribi un mensaje y segui la conversacion en tiempo real.</p>
+        </div>
+        <div class="chatControls">
+            <input type="text" id="chatInput" placeholder="Escribi tu mensaje...">
+            <button id="chatButton">Enviar</button>
+        </div>
     </div>
-    {{/each}}
+    <div id="chat" class="chatMessages">
+        {{#each chatMessages}}
+        <div class="userMessage">
+            <p class="username">{{this.username}}</p>
+            <p class="mensaje">{{this.mensaje}}</p>
+        </div>
+        {{/each}}
+    </div>
 </div>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

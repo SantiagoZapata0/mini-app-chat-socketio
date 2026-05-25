@@ -22,10 +22,18 @@ Swal.fire({
     socket.emit('nueva-conexion',user.username)
 })
 
-chatButton.addEventListener("click", () => {
+const sendMessage = () => {
     if(!chatInput.value.trim()) return
     socket.emit("mensaje", {username: user.username, mensaje: chatInput.value})
     chatInput.value = ""
+}
+
+chatButton.addEventListener("click", sendMessage)
+
+chatInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return
+    event.preventDefault()
+    sendMessage()
 })
 
 socket.on("saludo", (data) => {
@@ -53,12 +61,27 @@ socket.on("chat-logs", (data) => {
 socket.on("nueva-conexion", (userConectado) => {
     Toastify({
         text: `${userConectado} se ha conectado`,
-        duration: 5000,
+        duration: 3500,
         gravity: "top",
         position: "right",
         stopOnFocus: true,
-        style: {
-          background: "linear-gradient(to right, #00b09b, #96c93d)",
+        close: false,
+        offset: {
+            x: 20,
+            y: 20
         },
+        style: {
+          background: "#fffaf6",
+          color: "#3a2a25",
+          border: "1px solid rgba(201, 108, 78, 0.18)",
+          boxShadow: "0 12px 30px rgba(69, 34, 27, 0.14)",
+          borderRadius: "14px",
+          padding: "0.9rem 1rem",
+          fontFamily: "\"Space Grotesk\", \"Trebuchet MS\", sans-serif",
+          fontSize: "0.95rem",
+          maxWidth: "320px",
+          marginLeft: "1rem"
+        },
+        className: "chat-toast",
       }).showToast();
 })
